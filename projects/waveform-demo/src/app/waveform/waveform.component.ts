@@ -24,6 +24,8 @@ export class WaveformDemoComponent implements OnInit {
   isSrcError = false;
   isAudioQueried = false;
 
+  volume: number = 1;
+
   isRegionCtrl = new UntypedFormControl(true);
   regionStartCtrl = new UntypedFormControl(0);
   regionEndCtrl = new UntypedFormControl(0);
@@ -33,7 +35,7 @@ export class WaveformDemoComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.srcForm = new UntypedFormGroup({src: new UntypedFormControl()});
+    this.srcForm = new UntypedFormGroup({ src: new UntypedFormControl() });
     this.srcForm.valueChanges.subscribe(() => this.isSrcError = false);
     this.isRegionCtrl.valueChanges.subscribe(value => this.useRegion = value);
     this.regionStartCtrl.valueChanges.subscribe(value => {
@@ -67,6 +69,10 @@ export class WaveformDemoComponent implements OnInit {
     } catch (err) {
       this.isSrcError = true;
     }
+  }
+
+  setVolume() {
+    this.waveform.setVolume(this.volume);
   }
 
   onPlayButtonClick() {
@@ -112,13 +118,13 @@ export class WaveformDemoComponent implements OnInit {
     this.regionStartCtrl.setValue(0);
     this.regionEndCtrl.setValue(0);
     const params = new HttpParams().set('appKey', '5e32a885cd5244d39e88e0f1480ee45b');
-    this.http.get<{bursts: any[]}>(`https://sapi.audioburst.com/v2/topstories`, {params}).pipe(
+    this.http.get<{ bursts: any[] }>(`https://sapi.audioburst.com/v2/topstories`, { params }).pipe(
       map(resp => resp.bursts[0]),
       map(b => b.contentURLs.audioURL)
     )
-    .subscribe(src => {
-      this.src = src;
-      this.isAudioQueried = true;
-    });
+      .subscribe(src => {
+        this.src = src;
+        this.isAudioQueried = true;
+      });
   }
 }

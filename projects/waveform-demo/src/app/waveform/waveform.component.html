@@ -1,7 +1,8 @@
 <section class="section">
   <div class="container">
     <h1>Demo page of NgWaveform Angular component</h1>
-    <h2>With NgWaveform you can create interactive customisable waveform of any audio file in your Angular application.</h2>
+    <h2>With NgWaveform you can create interactive customisable waveform of any audio file in your Angular application.
+    </h2>
   </div>
 </section>
 <section class="section">
@@ -23,24 +24,14 @@
 </section>
 <section class="section">
   <div class="container">
-    <div class="loader" *ngIf="isAudioQueried && !isLoaded"><p>Loading...</p></div>
-    <ng-waveform #waveform *ngIf="isAudioQueried"
-      [src]="src"
-      [height]="150"
-      [useRegion]="useRegion"
-      regionBackgroundColor="rgba(255, 255, 255, 0.7)"
-      regionStartStickColor="#21f032"
-      regionEndStickColor="red"
-      regionTextColor="#09417e"
-      [withRegionLabels]="true"
-      waveColor="#ff11ff"
-      (trackLoaded)="onTrackLoaded($event)"
-      (rendered)="onTrackRendered($event)"
-      (durationChange)="onDurationChange($event)"
-      (timeUpdate)="onTimeUpdate($event)"
-      (paused)="onPaused()"
-      (regionChange)="onRegionChange($event)"
-    >
+    <div class="loader" *ngIf="isAudioQueried && !isLoaded">
+      <p>Loading...</p>
+    </div>
+    <ng-waveform #waveform *ngIf="isAudioQueried" [src]="src" [height]="150" [useRegion]="useRegion"
+      regionBackgroundColor="rgba(255, 255, 255, 0.7)" regionStartStickColor="#21f032" regionEndStickColor="red"
+      regionTextColor="#09417e" [withRegionLabels]="true" waveColor="#ff11ff" (trackLoaded)="onTrackLoaded($event)"
+      (rendered)="onTrackRendered($event)" (durationChange)="onDurationChange($event)"
+      (timeUpdate)="onTimeUpdate($event)" (paused)="onPaused()" (regionChange)="onRegionChange($event)">
     </ng-waveform>
   </div>
 </section>
@@ -81,6 +72,11 @@
         <input type="number" id="region-start" min="0" [max]="duration" [formControl]="regionStartCtrl">
         <label for="region-end">End</label>
         <input type="number" id="region-end" min="0" [max]="duration" [formControl]="regionEndCtrl">
+      </ng-container><br>
+      <ng-container>
+        <label for="volume">Volume</label>
+        <input type="range" id="volume" min="0" max="1" step="0.01" [(ngModel)]="this.volume">
+        <button (click)="setVolume()">Set Volume</button>
       </ng-container>
     </div>
   </div>

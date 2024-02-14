@@ -93,10 +93,12 @@ export class NgWaveformComponent implements OnInit, OnChanges, OnDestroy, AfterV
   private _savedCurrentTime = 0;
   private _audioContextStartTime = 0;
   private _progress = 0;
+  private _volume = 0;
   private _loaded = false;
   private _regionSubj = new BehaviorSubject<IRegionPositions>({ start: 0, end: 0 });
   private _region: IRegionPositions;
   private _stopAtRegionEnd = false;
+  private _gainNode: GainNode;
   // tslint:enable: variable-name
 
   get region() { return this._region; }
@@ -110,6 +112,7 @@ export class NgWaveformComponent implements OnInit, OnChanges, OnDestroy, AfterV
     // tslint:disable-next-line:no-string-literal
     const AudioContext = window['AudioContext'] || window['webkitAudioContext'];
     this.audioCtx = new AudioContext();
+
 
     this._isPlaying$.pipe(
       tap(isPlaying => this._isPlaying = isPlaying),
@@ -203,6 +206,11 @@ export class NgWaveformComponent implements OnInit, OnChanges, OnDestroy, AfterV
       console.error(err);
       this._isPlayingSubj.next(false);
     }
+  }
+
+  setVolume(volume: number) {
+    this._volume = volume - 1;
+    this._gainNode.gain.value = this._volume;
   }
 
   /**
@@ -323,6 +331,14 @@ export class NgWaveformComponent implements OnInit, OnChanges, OnDestroy, AfterV
   private setAudioSource() {
     this.audioCtxSource = this.audioCtx.createBufferSource();
     this.audioCtxSource.buffer = this.audioBuffer;
+
+    // Erstellen Sie ein neues GainNode Objekt
+    this._gainNode = this.audioCtx.createGain();
+
+    // Verbinden Sie die Knoten
+    this.audioCtxSource.connect(this._gainNode);
+    this._gainNode.connect(this.audioCtx.destination);
+    this._gainNode.gain.value = this._volume;
   }
 
   private setupCanvas(): void {
